@@ -1,2 +1,2 @@
 # doxing-ghost
-A trasversal tool for gaining information about people form web, like facebook and more over.
+A transversal tool for gaining information about people from web, like facebook and more over
