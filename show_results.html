@@ -1,0 +1,164 @@
+<html>
+<head>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+         <title>Risultati doxing-ghost</title>
+         <style>
+            #main{
+                margin-top:55px;
+            }
+         </style>
+         <script>
+         var PATH='certainty/';
+         var ORIGIN_LINK='google_link_info.json';
+         var ORIGIN_FB='fb_info.json';
+         var ORIGIN_UNUSED='unused_word_ita.yaml';
+         function readFb(callback){
+             $("#fb").load(PATH+ORIGIN_FB,function(){
+                 var fb = JSON.parse($("#fb").text());
+                 callback(fb);
+             });
+
+         }
+         function readLink(callback){
+             $("#link").load(PATH+ORIGIN_LINK,function(){
+                 var link = JSON.parse($("#link").text());
+                 callback(link);
+             });
+
+         }
+         function getColorPoint(point){
+             if(point>=80){
+                 return "#FF0000"; //red
+             }else{
+                 if(point>=50){
+                     return "#FFA500"; //orange
+                 }else{
+                     return "#000000";
+                 }
+             }
+         }
+         function isVisibleByPoint(point){
+             if(point>=50){
+                return "in";
+            }
+            else {
+                return "";
+            }
+         }
+         $(document).ready(function(){
+             readFb(function(fb){
+                 $("#fb_core").append('<div class="row"><div class="col-md-6"><img class="thumbnail" src="'+fb.core.img+'" /></div><div class="col-md-6"><h2>'+fb.core.name+'</h2></div></div>');
+                 for(var i=0;i<fb.base.length;i++){
+                     $("#fb_core").append('<div class="row"><div class="col-md-6"><p>'+fb.base[i].action+'</p></div><div class="col-md-6"><a href="'+fb.base[i].url+'" >'+fb.base[i].name+'</a></div></div>');
+                 }
+
+                 for(var i=0;i<fb.likes.length;i++){
+                     $("#fb_likes").append('<li class="list-group-item"><p>'+fb.likes[i].name+' ('+fb.likes[i].kind+')</p></li>');
+                 }
+                 for(var i=0;i<fb.friends.length;i++){
+                     $("#fb_friends").append('<li class="list-group-item"><a href="'+fb.friends[i].href+'">'+fb.friends[i].name+' ('+fb.friends[i].friends+')</a></li>');
+                 }
+             });
+             readLink(function(link){
+                for(var i=0;i<link.length;i++){
+                    var scrape ='';
+                    try{
+                        for(var j=0;j<link[i].scrape.length;j++){
+                            var lis=link[i].scrape[j];
+                            scrape+='<li><p><b>'+lis.wildcard+'</b></p><p>'+lis.text+'</p></li>'
+                        }
+                    }catch(err){
+
+                    }
+
+                    $("#google_link").append(
+                        '<div class="panel panel-default">'+
+                            '<div class="panel-heading">'+
+                                '<h4 class="media-heading"><a href="'+link[i].url+'">'+link[i].name+'</a> <span class="glyphicon glyphicon-link" aria-hidden="true"></span> <span style="background-color:'+getColorPoint(link[i].point)+'" class="badge">'+link[i].point+'</span></h4>'+
+                                '<a data-toggle="collapse" href="#collapse_'+i+'">altro <span class="badge">'+link[i].scrape.length+'</span></a>'+
+                            '</div>'+
+                            '<div id="collapse_'+i+'" class="panel-collapse collapse '+isVisibleByPoint(link[i].point)+'">'+
+                                '<p><a href="'+link[i].url+'"><span class="glyphicon glyphicon-link" aria-hidden="true"></span> '+link[i].url+'</a></p>'+
+                                '<ul>'+
+                                    scrape+
+                                '<ul>'+
+                            '</div>'+
+                        '</div>'
+                    );
+                }
+             });
+         });
+         </script>
+</head>
+
+<body>
+    <div id="fb" style="display:none"></div>
+    <div id="link" style="display:none"></div>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Doxing Ghost Result</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div id="main" class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><b>Facebook</b></div>
+                    <div class="panel-body">
+                        <div id="fb_core" class="row">
+                        </div>
+                        <div class="row">
+                            <h2>Interessi</h2>
+                        </div>
+                        <div class="row">
+                            <ul id="fb_likes" class="list-group">
+                            </ul>
+                        </div>
+                        <div class="row">
+                            <h2>Punti di Ingresso</h2>
+                        </div>
+                        <div class="row">
+                            <ul id="fb_friends" class="list-group">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div  class="col-md-6">
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><b>Google Link</b></div>
+                        <div class="panel-body">
+                            <p>Di seguito un elenco di siti relati al nick</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="google_link">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<html>

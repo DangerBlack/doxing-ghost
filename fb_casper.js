@@ -18,8 +18,10 @@ THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 var PATH='certainty/'
 var FILE_NAME='fb_info.json'
+var ORIGIN_TARGET='target.yaml';
 
-var TARGET= "zuck";
+
+var TARGET= "unkown";
 
 var blob={};
 function addInfo(tag,info){
@@ -29,6 +31,15 @@ function saveInfo(){
     var fs = require('fs');
     fs.write(PATH+FILE_NAME, JSON.stringify(blob), 'w');
 }
+function readTarget(){
+    var fs = require('fs');
+    //var text = fs.readFileSync(PATH+ORIGIN_FB,'utf8');
+    var utils = require('utils');
+    var text = fs.read(PATH+ORIGIN_TARGET);
+    TARGET = text;
+    return text;
+}
+
 
 var casper = require('casper').create({
     verbose: true,
@@ -59,6 +70,7 @@ casper.then(function(){
 
 //Wait to be redirected to the Home page, and then make a screenshot
 casper.then(function(){
+    readTarget();
     /*console.log("Make a screenshot and save it as AfterLogin.png");
 	this.wait(6000);//Wait a bit so page loads (there are a lot of ajax calls and that is why we are waiting 6 seconds)
     this.capture('picture/AfterLogin.png');*/
